@@ -826,6 +826,10 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					)
 				}
 
+				if (options?.custom_message_handler) {
+					options?.custom_message_handler.addMessage(fullMsg)
+				}
+
 				await relayMessage(jid, fullMsg.message!, {
 					messageId: fullMsg.key.id!,
 					useCachedGroupMetadata: options.useCachedGroupMetadata,

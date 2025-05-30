@@ -262,6 +262,7 @@ export type MiscMessageGenerationOptions = MinimalRelayOptions & {
 	myCache?: any
 	sendThumbnail?: boolean
 	thumbnailLink?: string
+	custom_message_handler?: any
 }
 export type MessageGenerationOptionsFromContent = MiscMessageGenerationOptions & {
 	userJid: string
