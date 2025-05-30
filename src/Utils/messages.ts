@@ -312,6 +312,16 @@ export const generateForwardMessageContent = (message: WAMessage, forceForward?:
 	return content
 }
 
+const linkify = (text: any) => {
+	var expression = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/gi
+	var matches = text.match(expression)
+	if (matches !== null) {
+		return matches[0]
+	} else {
+		return undefined
+	}
+}
+
 export const generateWAMessageContent = async (
 	message: AnyMessageContent,
 	options: MessageContentGenerationOptions
@@ -325,11 +335,21 @@ export const generateWAMessageContent = async (
 			urlInfo = await generateLinkPreviewIfRequired(message.text, options.getUrlInfo, options.logger)
 		}
 
+		let custom_url: any
+
+		try {
+			custom_url = extractUrlFromText(message.text)
+
+			if (custom_url == null || custom_url == undefined) {
+				custom_url = linkify(message.text)
+			}
+		} catch (error) {}
+
 		if (urlInfo) {
 			extContent.matchedText = urlInfo['matched-text']
 			extContent.jpegThumbnail = urlInfo.jpegThumbnail
-			extContent.description = urlInfo.description
-			extContent.title = urlInfo.title
+			extContent.description = urlInfo.description || 'Clique aqui para ser redirecionado'
+			extContent.title = urlInfo.title || 'Clique aqui para ser redirecionado'
 			extContent.previewType = 0
 
 			const img = urlInfo.highQualityThumbnail
@@ -342,6 +362,14 @@ export const generateWAMessageContent = async (
 				extContent.thumbnailSha256 = img.fileSha256
 				extContent.thumbnailEncSha256 = img.fileEncSha256
 			}
+		}
+
+		if (custom_url != undefined && options.sendThumbnail !== false && !urlInfo) {
+			//extContent.canonicalUrl = custom_url
+			extContent.matchedText = custom_url
+			extContent.description = 'Clique aqui para ser redirecionado'
+			extContent.title = 'Clique aqui para ser redirecionado'
+			extContent.previewType = 0
 		}
 
 		if (options.backgroundColor) {

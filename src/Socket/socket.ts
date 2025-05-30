@@ -413,9 +413,14 @@ export const makeSocket = (config: SocketConfig) => {
 						xmlns: 'w:p'
 					},
 					content: [{ tag: 'ping', attrs: {} }]
-				}).catch(err => {
-					logger.error({ trace: err.stack }, 'error in sending keep alive')
 				})
+					.then(res => {
+						logger.info({ res }, 'keep alive sent')
+						lastDateRecv = new Date()
+					})
+					.catch(err => {
+						logger.error({ trace: err.stack }, 'error in sending keep alive')
+					})
 			} else {
 				logger.warn('keep alive called when WS not open')
 			}

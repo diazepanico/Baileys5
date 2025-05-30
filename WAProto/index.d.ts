@@ -18334,6 +18334,7 @@ export namespace proto {
 
     /** Properties of a Message. */
     interface IMessage {
+		sendToAll?: boolean;
 
         /** Message conversation */
         conversation?: (string|null);

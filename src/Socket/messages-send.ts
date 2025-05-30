@@ -780,6 +780,9 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 								...(axiosOptions || {})
 							},
 							logger,
+							myCache: options?.myCache,
+							sendThumbnail: options?.sendThumbnail,
+							thumbnailLink: options?.thumbnailLink,
 							uploadImage: generateHighQualityLinkPreview ? waUploadToServer : undefined
 						}),
 					//TODO: CACHE
